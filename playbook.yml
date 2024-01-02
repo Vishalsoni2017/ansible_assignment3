@@ -1,0 +1,34 @@
+---
+- hosts: devserver
+  connection: ssh
+  gather_facts: yes
+  become: yes
+  name: ansible
+
+  tasks:
+    - name: install docker
+      yum: 
+        name: docker
+        state: present
+      
+    - name: start service
+      service:
+        name: docker
+        state: started
+
+    - name: create tomcat server
+      community.docker.docker_container:
+        name: tomcat_server
+        image: tomcat:8.5.47-jdk8-openjdk
+        state: started
+        ports:
+          - "8080:8080"
+    - name: copy war file
+      copy:
+        src: /home/ansible/gameoflife.war 
+        dest: /home/ansible
+
+    - name: copying file
+      command: docker cp  /home/ansible/gameoflife.war  tomcat_server:/usr/local/tomcat/webapps
+        
+  
