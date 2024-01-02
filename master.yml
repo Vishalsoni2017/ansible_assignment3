@@ -1,0 +1,9 @@
+---
+- hosts: devserver
+  name: ansible
+  connection: ssh
+  gather_facts: yes
+  become: yes
+  
+  roles:
+    - deploys
